@@ -252,6 +252,6 @@ void loop()
     brake();
   }
 
-  delay(10);        //Short break for smooth flow
+  delay(10);        //Short break
   
 }
