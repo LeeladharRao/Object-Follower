@@ -53,9 +53,9 @@ int lrmin = 15;
 
 //==================================================================================================================================================
 
-void setup()
-{
-  //Pins for motor driver as output
+void setup(){
+  
+ //Pins for motor driver as output
   pinMode(ena , OUTPUT);
   pinMode(in1 , OUTPUT);
   pinMode(in2 , OUTPUT);
@@ -81,40 +81,38 @@ void setup()
 }
 
 //Moving Forward
-void fwd()
-{
+void fwd(){
+ 
   analogWrite(ena , robot_speed);
   digitalWrite(in1 , HIGH);
   digitalWrite(in2 , LOW);
   analogWrite(enb , robot_speed);
   digitalWrite(in3 , HIGH);
   digitalWrite(in4 , LOW);
-  
 }
 
 //Not Moving at all
-void brake ()
-{
+void brake (){
+ 
   digitalWrite(ena , LOW);
   digitalWrite(enb , LOW);
 }
 
 
 //Moving Backward
-void bwd()
-{
+void bwd(){
+ 
   analogWrite(ena , robot_speed);
   digitalWrite(in1 , LOW);
   digitalWrite(in2 , HIGH);
   analogWrite(enb , robot_speed);
   digitalWrite(in3 , LOW);
   digitalWrite(in4 , HIGH); 
-  
 }
 
 //Moving to the left
-void rotate_left()
-{
+void rotate_left(){
+ 
   analogWrite(ena , robot_speed);
   digitalWrite(in1 , HIGH);
   digitalWrite(in2 , LOW);
@@ -124,8 +122,8 @@ void rotate_left()
 }
 
 //Moving to the Right
-void rotate_right()
-{
+void rotate_right(){
+ 
   analogWrite(ena , robot_speed);
   digitalWrite(in1 , LOW);
   digitalWrite(in2 , HIGH);
@@ -136,8 +134,7 @@ void rotate_right()
 
 //==================================================================================================================================================
 
-void loop()
-{
+void loop(){
   
   //Read values when IR = ON
   digitalWrite(enable_eye , HIGH);    //IR-LEDs turn on
@@ -168,24 +165,20 @@ void loop()
 
 
   //If the radiation on the left stronger than on the right move left
-  if(relative_left > relative_right)
-  {
+  if(relative_left > relative_right){
     pan_pos = pan_pos-servo_step;    //remove 1degree from servo position
   }
 
   //If the radiation on the right stronger than on the left move right
-  else if(relative_left < relative_right )
-  {
+  else if(relative_left < relative_right ){
     pan_pos = pan_pos+servo_step;  //adding 1degree to the servo position
   }
  
   //Make sure that the servo is between 15degrees - 165degrees
-  if(pan_pos > lrmax)
-  {
+  if(pan_pos > lrmax){
     pan_pos = lrmax;
   }
-  if(pan_pos < lrmin)
-  {
+  if(pan_pos < lrmin){
     pan_pos = lrmin;
   }
 
@@ -195,24 +188,20 @@ void loop()
  
  
   //If the radiation below is stronger than above move downwards
-  if(relative_bottom > relative_top)
-  {
+  if(relative_bottom > relative_top){
     tilt_pos = tilt_pos-servo_step;    //remove 1degree from the servo position
   }
 
   //If the radiation above is stronger than below move upwards
-  else if(relative_bottom < relative_top)
-  {
+  else if(relative_bottom < relative_top){
     tilt_pos = tilt_pos+servo_step;    //adding 1degree to the servo position
   }
   
   //Make sure that the servo is between 80degrees and 165degrees
-  if(tilt_pos > udmax)
-  {
+  if(tilt_pos > udmax){
     tilt_pos = udmax;
   }
-  if(tilt_pos < udmin)
-  {
+  if(tilt_pos < udmin){
     tilt_pos = udmin;
   }
   
@@ -222,34 +211,30 @@ void loop()
 //==================================================================================================================================================
     
   //When the servo has reached the angle 115degrees turn right
-  if(pan_pos > 115)
-  {
+  if(pan_pos > 115){
     rotate_right(); 
   }
   
   //When the servo has reached the angle 75degrees turn left
-  else if(pan_pos < 75)
-  {
+  else if(pan_pos < 75){
     rotate_left();
   }
 
- 
   //If the angle is less than 115 ° AND the IR radiation is less than 300(top AND bottom AND right and left) move forward
-  else if(tilt_pos < 115 && relative_top < 300 && relative_bottom < 300 && relative_left < 300 && relative_right < 300)
-  {
+  else if(tilt_pos < 115 && relative_top < 300 && relative_bottom < 300 && relative_left < 300 && relative_right < 300){
     fwd();
   }
  
   //If the angle is less than 115 ° AND the IR radiation is greater than 600(top AND bottom AND right and left) move backward
-  else if(tilt_pos < 115 && relative_top > 600 && relative_bottom > 600 && relative_left > 600 && relative_right > 600)
-  {
+  else if(tilt_pos < 115 && relative_top > 600 && relative_bottom > 600 && relative_left > 600 && relative_right > 600){
     bwd();
   }
 
   //In all other cases stop
-  else
-  {
+  else{
     brake();
+    pan_servo.write(pan_zero);
+    tilt_servo.write(tilt_zero);
   }
 
   delay(10);        //Short break
